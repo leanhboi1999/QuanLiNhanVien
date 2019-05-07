@@ -6,7 +6,13 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -15,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -32,12 +39,19 @@ public class QuanLiNhanVienUI extends JFrame {
 	JButton btnLuu, btnXoa, btnThoat;
 
 	ArrayList<PhongBan> dsPhongBan;
-	ArrayList<NhanVien> dsNhaVien;
+	ArrayList<NhanVien> dsNhanVien;
+
+	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+
+	PhongBan pbSelect = null;
+	NhanVien nvSelect = null;
 
 	public QuanLiNhanVienUI(String tieude) {
 		this.setTitle(tieude);
 		addControls();
+		fakeData();
 		addEvents();
+
 	}
 
 	public void addControls() {
@@ -135,10 +149,138 @@ public class QuanLiNhanVienUI extends JFrame {
 
 	public void fakeData() {
 		dsPhongBan = new ArrayList<PhongBan>();
+		PhongBan phtgv = new PhongBan();
+		phtgv.setMaPhong("P01");
+		phtgv.setTenPhong("Phòng hợp tác giảng viên");
+
+		PhongBan pkd = new PhongBan();
+		pkd.setMaPhong("P02");
+		pkd.setTenPhong("Phòng kinh doanh");
+
+		PhongBan pkt = new PhongBan();
+		pkt.setMaPhong("P03");
+		pkt.setTenPhong("Phòng kế toán");
+
+		dsPhongBan.add(phtgv);
+		dsPhongBan.add(pkd);
+		dsPhongBan.add(pkt);
+
+		phtgv.themNhanVien(new NhanVien("NV1", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
+		phtgv.themNhanVien(new NhanVien("NV2", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
+		pkt.themNhanVien(new NhanVien("NV3", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
+		pkt.themNhanVien(new NhanVien("NV4", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
+		pkd.themNhanVien(new NhanVien("NV5", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
+		pkd.themNhanVien(new NhanVien("NV6", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
+
+		for (PhongBan pb : dsPhongBan) {
+			cboPhongBan.addItem(pb);
+		}
+
 	}
 
 	public void addEvents() {
+		cboPhongBan.addActionListener(new ActionListener() {
 
+			public void actionPerformed(ActionEvent e) {
+				if (cboPhongBan.getSelectedIndex() == -1)
+					return;
+
+				PhongBan pbSelect = (PhongBan) cboPhongBan.getSelectedItem();
+				listNhanVien.setListData(pbSelect.getNhanViens());
+
+			}
+		});
+
+		listNhanVien.addMouseListener(new MouseListener() {
+
+			@Override
+			public void mouseReleased(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent arg0) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				if (listNhanVien.getSelectedIndex() == -1)
+					return;
+				nvSelect = listNhanVien.getSelectedValue();
+				txtMa.setText(nvSelect.getMaNhanVien());
+				txtTen.setText(nvSelect.getTenNhanVien());
+				txtNgayVaoLam.setText(sdf.format(nvSelect.getNgayVaoLamViec()));
+				txtNamSinh.setText(sdf.format(nvSelect.getNamSinh()));
+			}
+		});
+
+		btnLuu.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				xuLyLuu();
+
+			}
+		});
+
+		btnXoa.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				xuLyXoa();
+
+			}
+		});
+
+		btnThoat.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+
+			}
+		});
+	}
+
+	protected void xuLyXoa() {
+		try {
+			if (nvSelect != null) {
+				pbSelect.getNhanViens().remove(nvSelect);
+				nvSelect = null;
+				listNhanVien.setListData(pbSelect.getNhanViens());
+
+			}
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null, ex.toString());
+		}
+	}
+
+	protected void xuLyLuu() {
+		try {
+			NhanVien nv = new NhanVien(txtMa.getText(), txtTen.getText(), sdf.parse(txtNgayVaoLam.getText()),
+					sdf.parse(txtNamSinh.getText()));
+			if (pbSelect != null) {
+				pbSelect.themNhanVien(nv);
+				listNhanVien.setListData(pbSelect.getNhanViens());
+			}
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(null, ex.toString());
+		}
 	}
 
 	public void showWindows() {
