@@ -147,6 +147,7 @@ public class QuanLiNhanVienUI extends JFrame {
 		lblTen.setPreferredSize(lblNgayVaoLam.getPreferredSize());
 	}
 
+	@SuppressWarnings("deprecation")
 	public void fakeData() {
 		dsPhongBan = new ArrayList<PhongBan>();
 		PhongBan phtgv = new PhongBan();

@@ -18,6 +18,13 @@ public class PhongBan implements Serializable {
 		this.nhanViens = new Vector<NhanVien>();
 	}
 
+	public PhongBan(String maPhong, String tenPhong) {
+		super();
+		this.maPhong = maPhong;
+		this.tenPhong = tenPhong;
+		this.nhanViens = new Vector<NhanVien>();
+	}
+
 	public String getMaPhong() {
 		return maPhong;
 	}
