@@ -3,55 +3,43 @@ package model;
 import java.io.Serializable;
 import java.util.Vector;
 
-public class PhongBan implements Serializable {
+@SuppressWarnings("serial")
+public class PhongBan implements Serializable{
 	private String maPhong;
 	private String tenPhong;
-	private Vector<NhanVien> nhanViens;
-
-	public void themNhanVien(NhanVien nv) {
+	private Vector<NhanVien>nhanViens;
+	
+	
+	public void themNhanVien(NhanVien nv)
+	{
 		this.nhanViens.add(nv);
 		nv.setPhong(this);
 	}
-
+	
 	public PhongBan() {
 		super();
-		this.nhanViens = new Vector<NhanVien>();
+		this.nhanViens=new  Vector<NhanVien>();
 	}
-
-	public PhongBan(String maPhong, String tenPhong) {
-		super();
-		this.maPhong = maPhong;
-		this.tenPhong = tenPhong;
-		this.nhanViens = new Vector<NhanVien>();
-	}
-
 	public String getMaPhong() {
 		return maPhong;
 	}
-
 	public void setMaPhong(String maPhong) {
 		this.maPhong = maPhong;
 	}
-
 	public String getTenPhong() {
 		return tenPhong;
 	}
-
 	public void setTenPhong(String tenPhong) {
 		this.tenPhong = tenPhong;
 	}
-
-	public  Vector<NhanVien> getNhanViens() {
+	public Vector<NhanVien> getNhanViens() {
 		return nhanViens;
 	}
-
-	public void setNhanViens( Vector<NhanVien> nhanViens) {
+	public void setNhanViens(Vector<NhanVien> nhanViens) {
 		this.nhanViens = nhanViens;
 	}
-	
 	@Override
 	public String toString() {
 		return this.tenPhong;
 	}
-
 }

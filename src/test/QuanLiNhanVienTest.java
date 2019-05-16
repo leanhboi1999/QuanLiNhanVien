@@ -1,13 +1,13 @@
 package test;
 
-import ui.QuanLiNhanVienUI;
+import ui.QuanLyNhanVienUI;
 
 public class QuanLiNhanVienTest {
 
 	public static void main(String[] args) {
-		QuanLiNhanVienUI ui = new QuanLiNhanVienUI("Quản lí nhân viên");
-		ui.showWindows();
-
+		// TODO Auto-generated method stub
+		QuanLyNhanVienUI ui=new QuanLyNhanVienUI("Quản lý nhân viên");
+		ui.showWindow();
 	}
 
 }
