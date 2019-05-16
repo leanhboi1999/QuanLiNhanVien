@@ -28,30 +28,31 @@ import javax.swing.JTextField;
 import javax.swing.border.Border;
 import javax.swing.border.TitledBorder;
 
+//import jdk.nashorn.internal.scripts.JS;
 import model.NhanVien;
 import model.PhongBan;
 
 @SuppressWarnings("serial")
-public class QuanLiNhanVienUI extends JFrame {
+public class QuanLyNhanVienUI extends JFrame {
+
 	JComboBox<PhongBan> cboPhongBan;
 	JList<NhanVien> listNhanVien;
 	JTextField txtMa, txtTen, txtNgayVaoLam, txtNamSinh;
 	JButton btnLuu, btnXoa, btnThoat;
 
 	ArrayList<PhongBan> dsPhongBan;
-	ArrayList<NhanVien> dsNhanVien;
+	ArrayList<NhanVien> dsNhanVienTheoPhongBan;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 
-	PhongBan pbSelect = null;
-	NhanVien nvSelect = null;
+	PhongBan pbSelected = null;
+	NhanVien nvSelected = null;
 
-	public QuanLiNhanVienUI(String tieude) {
-		this.setTitle(tieude);
+	public QuanLyNhanVienUI(String title) {
+		super(title);
 		addControls();
-		fakeData();
 		addEvents();
-
+		fakeData();
 	}
 
 	public void addControls() {
@@ -62,7 +63,7 @@ public class QuanLiNhanVienUI extends JFrame {
 		JPanel pnPhongBan = new JPanel();
 		pnPhongBan.setLayout(new FlowLayout());
 		pnMain.add(pnPhongBan);
-		JLabel lblPhongBan = new JLabel("Chọn phòng ban");
+		JLabel lblPhongBan = new JLabel("Chọn phòng ban:");
 		cboPhongBan = new JComboBox<PhongBan>();
 		cboPhongBan.setPreferredSize(new Dimension(200, 25));
 		pnPhongBan.add(lblPhongBan);
@@ -74,29 +75,32 @@ public class QuanLiNhanVienUI extends JFrame {
 		JPanel pnDanhSach = new JPanel();
 		pnDanhSach.setLayout(new BorderLayout());
 
-		Border borderDanhsach = BorderFactory.createLineBorder(Color.BLUE);
-		TitledBorder titleBorderDanhSach = new TitledBorder(borderDanhsach, "Danh sách");
+		Border borderDanhSach = BorderFactory.createLineBorder(Color.BLUE);
+		TitledBorder titleBorderDanhSach = new TitledBorder(borderDanhSach, "Danh sách");
 		titleBorderDanhSach.setTitleJustification(TitledBorder.CENTER);
+		titleBorderDanhSach.setTitleColor(Color.RED);
 		pnDanhSach.setBorder(titleBorderDanhSach);
 
 		listNhanVien = new JList<NhanVien>();
 		JScrollPane sc = new JScrollPane(listNhanVien, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
-		// Màn hình cần co dãn theo người dùng, use borderlayout
 		pnDanhSach.add(sc, BorderLayout.CENTER);
 		pnDanhSachVaChiTiet.add(pnDanhSach);
 
 		JPanel pnChiTiet = new JPanel();
 		pnChiTiet.setLayout(new BoxLayout(pnChiTiet, BoxLayout.Y_AXIS));
+
 		Border borderChiTiet = BorderFactory.createLineBorder(Color.BLUE);
-		TitledBorder titleBorderChiTiet = new TitledBorder(borderChiTiet, "Chi tiết");
+		TitledBorder titleBorderChiTiet = new TitledBorder(borderChiTiet, "Thông tin chi tiết");
 		titleBorderChiTiet.setTitleJustification(TitledBorder.CENTER);
+		titleBorderChiTiet.setTitleColor(Color.RED);
 		pnChiTiet.setBorder(titleBorderChiTiet);
+
 		pnDanhSachVaChiTiet.add(pnChiTiet);
 
 		JPanel pnMa = new JPanel();
 		pnMa.setLayout(new FlowLayout());
-		JLabel lblMa = new JLabel("Mã: ");
+		JLabel lblMa = new JLabel("Mã:");
 		txtMa = new JTextField(15);
 		pnMa.add(lblMa);
 		pnMa.add(txtMa);
@@ -104,29 +108,30 @@ public class QuanLiNhanVienUI extends JFrame {
 
 		JPanel pnTen = new JPanel();
 		pnTen.setLayout(new FlowLayout());
-		JLabel lblTen = new JLabel("Tên: ");
+		JLabel lblTen = new JLabel("Tên:");
 		txtTen = new JTextField(15);
 		pnTen.add(lblTen);
 		pnTen.add(txtTen);
 		pnChiTiet.add(pnTen);
 
-		JPanel pnNgayVaoLam = new JPanel();
-		pnNgayVaoLam.setLayout(new FlowLayout());
-		JLabel lblNgayVaoLam = new JLabel("Ngày vào làm: ");
+		JPanel pnNgayvao = new JPanel();
+		pnNgayvao.setLayout(new FlowLayout());
+		JLabel lblNgayVao = new JLabel("Ngày vào:");
 		txtNgayVaoLam = new JTextField(15);
-		pnNgayVaoLam.add(lblNgayVaoLam);
-		pnNgayVaoLam.add(txtNgayVaoLam);
-		pnChiTiet.add(pnNgayVaoLam);
+		pnNgayvao.add(lblNgayVao);
+		pnNgayvao.add(txtNgayVaoLam);
+		pnChiTiet.add(pnNgayvao);
 
 		JPanel pnNamSinh = new JPanel();
 		pnNamSinh.setLayout(new FlowLayout());
-		JLabel lblNamSinh = new JLabel("Năm sinh: ");
+		JLabel lblNamSinh = new JLabel("Năm sinh:");
 		txtNamSinh = new JTextField(15);
 		pnNamSinh.add(lblNamSinh);
 		pnNamSinh.add(txtNamSinh);
 		pnChiTiet.add(pnNamSinh);
 
 		JPanel pnButton = new JPanel();
+
 		Border borderButton = BorderFactory.createLineBorder(Color.BLUE);
 		TitledBorder titleBorderButton = new TitledBorder(borderButton, "Chọn chức năng");
 		titleBorderButton.setTitleJustification(TitledBorder.CENTER);
@@ -137,137 +142,126 @@ public class QuanLiNhanVienUI extends JFrame {
 		btnLuu = new JButton("Lưu");
 		btnXoa = new JButton("Xóa");
 		btnThoat = new JButton("Thoát");
+
 		pnButton.add(btnLuu);
 		pnButton.add(btnXoa);
 		pnButton.add(btnThoat);
 		pnMain.add(pnButton);
 
-		lblMa.setPreferredSize(lblNgayVaoLam.getPreferredSize());
-		lblNamSinh.setPreferredSize(lblNgayVaoLam.getPreferredSize());
-		lblTen.setPreferredSize(lblNgayVaoLam.getPreferredSize());
+		lblMa.setPreferredSize(lblNamSinh.getPreferredSize());
+		lblTen.setPreferredSize(lblNamSinh.getPreferredSize());
+		lblNgayVao.setPreferredSize(lblNamSinh.getPreferredSize());
 	}
 
 	@SuppressWarnings("deprecation")
 	public void fakeData() {
 		dsPhongBan = new ArrayList<PhongBan>();
+
 		PhongBan phtgv = new PhongBan();
-		phtgv.setMaPhong("P01");
+		phtgv.setMaPhong("p1");
 		phtgv.setTenPhong("Phòng hợp tác giảng viên");
 
 		PhongBan pkd = new PhongBan();
-		pkd.setMaPhong("P02");
-		pkd.setTenPhong("Phòng kinh doanh");
+		pkd.setMaPhong("p2");
+		pkd.setTenPhong("Phòng Kinh Doanh");
 
-		PhongBan pkt = new PhongBan();
-		pkt.setMaPhong("P03");
-		pkt.setTenPhong("Phòng kế toán");
+		PhongBan pKt = new PhongBan();
+		pKt.setMaPhong("p3");
+		pKt.setTenPhong("Phòng kế toán");
 
 		dsPhongBan.add(phtgv);
 		dsPhongBan.add(pkd);
-		dsPhongBan.add(pkt);
+		dsPhongBan.add(pKt);
 
-		phtgv.themNhanVien(new NhanVien("NV1", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
-		phtgv.themNhanVien(new NhanVien("NV2", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
-		pkt.themNhanVien(new NhanVien("NV3", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
-		pkt.themNhanVien(new NhanVien("NV4", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
-		pkd.themNhanVien(new NhanVien("NV5", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
-		pkd.themNhanVien(new NhanVien("NV6", "Chưa biết", new Date(2016, 1, 1), new Date(1990, 1, 1)));
+		phtgv.themNhanVien(
+				new NhanVien("NV1", "Nguyễn Thị An", new Date(2016 - 1900, 1, 1), new Date(1990 - 1900, 1, 1)));
+
+		phtgv.themNhanVien(
+				new NhanVien("NV2", "Trần văn Bình", new Date(2015 - 1900, 1, 1), new Date(1992 - 1900, 1, 1)));
+
+		pkd.themNhanVien(new NhanVien("NV3", "Hồ Thị Giải", new Date(2013 - 1900, 1, 1), new Date(1989 - 1900, 1, 1)));
+		pkd.themNhanVien(
+				new NhanVien("NV4", "Trần Đình Thoát", new Date(2014 - 1900, 1, 1), new Date(1988 - 1900, 1, 1)));
 
 		for (PhongBan pb : dsPhongBan) {
 			cboPhongBan.addItem(pb);
 		}
-
 	}
 
 	public void addEvents() {
 		cboPhongBan.addActionListener(new ActionListener() {
 
 			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
 				if (cboPhongBan.getSelectedIndex() == -1)
 					return;
 
-				PhongBan pbSelect = (PhongBan) cboPhongBan.getSelectedItem();
-				listNhanVien.setListData(pbSelect.getNhanViens());
-
+				pbSelected = (PhongBan) cboPhongBan.getSelectedItem();
+				listNhanVien.setListData(pbSelected.getNhanViens());
 			}
 		});
-
 		listNhanVien.addMouseListener(new MouseListener() {
 
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
+			public void mouseReleased(MouseEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 
-			@Override
-			public void mousePressed(MouseEvent arg0) {
+			public void mousePressed(MouseEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 
-			@Override
-			public void mouseExited(MouseEvent arg0) {
+			public void mouseExited(MouseEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 
-			@Override
-			public void mouseEntered(MouseEvent arg0) {
+			public void mouseEntered(MouseEvent e) {
 				// TODO Auto-generated method stub
 
 			}
 
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
 				if (listNhanVien.getSelectedIndex() == -1)
 					return;
-				nvSelect = listNhanVien.getSelectedValue();
-				txtMa.setText(nvSelect.getMaNhanVien());
-				txtTen.setText(nvSelect.getTenNhanVien());
-				txtNgayVaoLam.setText(sdf.format(nvSelect.getNgayVaoLamViec()));
-				txtNamSinh.setText(sdf.format(nvSelect.getNamSinh()));
+				nvSelected = listNhanVien.getSelectedValue();
+				txtMa.setText(nvSelected.getMaNhanVien());
+				txtTen.setText(nvSelected.getTenNhanVien());
+
+				txtNamSinh.setText(sdf.format(nvSelected.getNamSinh()));
+				txtNgayVaoLam.setText(sdf.format(nvSelected.getNgayVaoLamViec()));
 			}
 		});
-
 		btnLuu.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
 				xuLyLuu();
-
 			}
 		});
-
 		btnXoa.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
 				xuLyXoa();
-
 			}
 		});
-
 		btnThoat.addActionListener(new ActionListener() {
 
-			@Override
 			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
 				System.exit(0);
-
 			}
 		});
 	}
 
 	protected void xuLyXoa() {
-		try {
-			if (nvSelect != null) {
-				pbSelect.getNhanViens().remove(nvSelect);
-				nvSelect = null;
-				listNhanVien.setListData(pbSelect.getNhanViens());
-
-			}
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(null, ex.toString());
+		if (nvSelected != null) {
+			pbSelected.getNhanViens().remove(nvSelected);
+			nvSelected = null;
+			listNhanVien.setListData(pbSelected.getNhanViens());
 		}
 	}
 
@@ -275,20 +269,19 @@ public class QuanLiNhanVienUI extends JFrame {
 		try {
 			NhanVien nv = new NhanVien(txtMa.getText(), txtTen.getText(), sdf.parse(txtNgayVaoLam.getText()),
 					sdf.parse(txtNamSinh.getText()));
-			if (pbSelect != null) {
-				pbSelect.themNhanVien(nv);
-				listNhanVien.setListData(pbSelect.getNhanViens());
+			if (pbSelected != null) {
+				pbSelected.themNhanVien(nv);
+				listNhanVien.setListData(pbSelected.getNhanViens());
 			}
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(null, ex.toString());
 		}
 	}
 
-	public void showWindows() {
-		this.setSize(600, 400);
+	public void showWindow() {
+		this.setSize(550, 350);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 		this.setVisible(true);
 	}
-
 }
